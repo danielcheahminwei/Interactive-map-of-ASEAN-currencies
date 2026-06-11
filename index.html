@@ -8,21 +8,7 @@
         :root {
             --primary-blue: #003366;
             --accent-red: #be123c;
-            --ocean-blue: #bae6fd;
             --dark-slate: #1e293b;
-            
-            /* Bright, child-friendly colors for distinct country separation */
-            --color-myanmar: #f59e0b;
-            --color-thailand: #ef4444;
-            --color-laos: #3b82f6;
-            --color-cambodia: #10b981;
-            --color-vietnam: #8b5cf6;
-            --color-malaysia: #ec4899;
-            --color-singapore: #f43f5e;
-            --color-brunei: #facc15;
-            --color-indonesia: #14b8a6;
-            --color-philippines: #f97316;
-            --color-timor: #6366f1;
         }
 
         body {
@@ -42,7 +28,7 @@
             padding: 15px 20px;
             border-radius: 12px;
             width: 100%;
-            max-width: 1050px;
+            max-width: 1100px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             margin-bottom: 20px;
         }
@@ -60,13 +46,13 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1.3fr 0.7fr;
+            grid-template-columns: 1.2fr 0.8fr;
             gap: 20px;
             width: 100%;
-            max-width: 1050px;
+            max-width: 1100px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 950px) {
             .main-layout { grid-template-columns: 1fr; }
         }
 
@@ -87,63 +73,58 @@
             padding-bottom: 8px;
         }
 
-        /* Interactive Map Frame Layout */
-        .map-container {
-            background-color: var(--ocean-blue);
-            border: 2px solid #7dd3fc;
-            border-radius: 8px;
-            padding: 10px;
+        /* --- VISUAL IMAGE MAP WRAPPER --- */
+        .map-wrapper {
             position: relative;
-            min-height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            border: 3px solid #cbd5e1;
+            border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        svg {
+        .map-bg-image {
             width: 100%;
             height: auto;
-            max-height: 480px;
+            display: block;
         }
 
-        /* Base SVG Path Properties */
-        .country-path {
-            stroke: #ffffff;
-            stroke-width: 1.5;
+        /* Invisible, interactive touch buttons placed over your image countries */
+        .map-hotspot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0); /* Invisible by default */
+            border-radius: 50%;
             cursor: pointer;
-            transition: filter 0.2s, transform 0.2s, stroke 0.2s;
+            transform: translate(-50%, -50%);
+            transition: background 0.2s, border 0.2s;
         }
 
-        /* Interactive hover state highlights individual map chunks */
-        .country-path:hover {
-            filter: brightness(1.2) drop-shadow(0px 4px 8px rgba(0,0,0,0.3));
-            stroke: #1e293b;
-            stroke-width: 2;
+        /* Highlights the country with a glowing ring on hover */
+        .map-hotspot:hover {
+            background: rgba(254, 240, 138, 0.35); /* Soft yellow highlight tint */
+            border: 2px dashed #ca8a04;
         }
 
-        .country-path.active {
-            filter: brightness(0.8) saturate(1.5) !important;
-            stroke: #000000 !important;
-            stroke-width: 2.5;
-        }
-
-        /* Dialogue Box Style */
+        /* Dialogue Pop-up Bubble */
         .map-tooltip {
             position: absolute;
             background: rgba(30, 41, 59, 0.95);
             color: white;
             padding: 8px 12px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             pointer-events: none;
             display: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             z-index: 10;
             font-weight: bold;
             white-space: nowrap;
+            transform: translate(-50%, -125%);
         }
 
+        /* Dialogue triangle arrow pointer */
         .map-tooltip::after {
             content: '';
             position: absolute;
@@ -155,7 +136,7 @@
             border-color: rgba(30, 41, 59, 0.95) transparent;
         }
 
-        /* Math Workspace Elements */
+        /* Math Workspace Panel elements */
         .workspace {
             background: #f8fafc;
             border: 2px dashed #cbd5e1;
@@ -176,7 +157,7 @@
             text-align: left;
         }
 
-        /* Cash Visual Items Layout */
+        /* Tactile Cash Flex Configurations */
         .cash-flex-container {
             display: flex;
             flex-wrap: wrap;
@@ -269,56 +250,32 @@
     <header>
         <h1>🌏 ASEAN Currency Flight Academy</h1>
         <div class="airport-status" id="flight-status">
-            📍 DEPARTURE TERMINAL: MALAYSIA // MOVE YOUR CURSOR OR CLICK A COUNTRY TO BEGIN
+            📍 HUB TERMINAL: MALAYSIA // HOVER OVER COUNTRIES OR CLICK TO FLY TO A MISSION
         </div>
     </header>
 
     <div class="main-layout">
         
         <div class="panel">
-            <h2>Colourful 2D Map of Southeast Asian Nations (11 Member States)</h2>
-            <div class="map-container" id="map-frame">
+            <h2>Interactive ASEAN Destination Map</h2>
+            <div class="map-wrapper" id="map-frame">
                 
                 <div id="tooltip" class="map-tooltip"></div>
 
-                <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
-                    
-                    <path id="MM" data-name="Myanmar" data-flag="🇲🇲" data-symbol="K (Kyat)" class="country-path" style="fill: var(--color-myanmar);" d="M 120 40 L 170 60 L 190 120 L 210 140 L 220 220 L 195 240 L 190 180 L 160 160 L 150 100 L 100 90 Z" onclick="launchGame('MM')"/>
-                    
-                    <path id="LA" data-name="Laos" data-flag="🇱🇦" data-symbol="₭ (Kip)" class="country-path" style="fill: var(--color-laos);" d="M 200 115 L 250 130 L 290 200 L 270 230 L 240 210 L 225 140 Z" onclick="launchGame('LA')"/>
-                    
-                    <path id="TH" data-name="Thailand" data-flag="🇹🇭" data-symbol="฿ (Baht)" class="country-path" style="fill: var(--color-thailand);" d="M 195 185 L 235 215 L 250 215 L 265 260 L 220 270 L 215 320 L 200 350 L 195 310 L 210 245 Z" onclick="launchGame('TH')"/>
-                    
-                    <path id="KH" data-name="Cambodia" data-flag="🇰🇭" data-symbol="៛ (Riel)" class="country-path" style="fill: var(--color-cambodia);" d="M 240 275 L 285 270 L 295 315 L 245 325 Z" onclick="launchGame('KH')"/>
-                    
-                    <path id="VN" data-name="Vietnam" data-flag="🇻🇳" data-symbol="₫ (Dong)" class="country-path" style="fill: var(--color-vietnam);" d="M 255 125 L 280 140 L 300 200 L 315 260 L 300 320 L 290 315 L 280 265 L 245 210 Z" onclick="launchGame('VN')"/>
-                    
-                    <path id="MY" data-name="Malaysia" data-flag="🇲🇾" data-symbol="RM (Ringgit)" class="country-path" style="fill: var(--color-malaysia);" d="M 198 360 L 220 360 L 230 385 L 205 390 Z M 370 370 L 460 370 L 450 400 L 380 395 Z" onclick="launchGame('MY')"/>
-                    
-                    <circle id="SG" data-name="Singapore" data-flag="🇸🇬" data-symbol="$ (SGD)" class="country-path" style="fill: var(--color-singapore);" cx="231" cy="392" r="12" onclick="launchGame('SG')"/>
-                    
-                    <polygon id="BN" data-name="Brunei" data-flag="🇧🇳" data-symbol="$ (BND)" class="country-path" style="fill: var(--color-brunei);" points="405,372 415,372 412,380 403,378" onclick="launchGame('BN')"/>
-                    
-                    <path id="ID" data-name="Indonesia" data-flag="🇮🇩" data-symbol="Rp (Rupiah)" class="country-path" style="fill: var(--color-indonesia);" d="M 150 410 L 250 450 L 220 470 L 140 430 Z M 260 465 L 430 465 L 430 490 L 260 490 Z M 350 390 L 365 375 L 395 395 L 365 425 Z M 480 380 L 580 360 L 590 440 L 480 440 Z" onclick="launchGame('ID')"/>
-                    
-                    <path id="PH" data-name="Philippines" data-flag="🇵🇭" data-symbol="₱ (PHP)" class="country-path" style="fill: var(--color-philippines);" d="M 420 120 L 460 110 L 495 190 L 510 260 L 460 280 L 420 200 Z" onclick="launchGame('PH')"/>
-                    
-                    <path id="TL" data-name="Timor-Leste" data-flag="🇹🇱" data-symbol="$ (USD)" class="country-path" style="fill: var(--color-timor);" d="M 445 480 L 475 480 L 470 492 L 442 490 Z" onclick="launchGame('TL')"/>
+                <img src="1000114636.webp" class="map-bg-image" alt="ASEAN Member States Map">
 
-                    <g font-size="11" font-weight="bold" fill="white" pointer-events="none" font-family="sans-serif">
-                        <text x="125" y="110">MM</text>
-                        <text x="230" y="150">LA</text>
-                        <text x="210" y="240">TH</text>
-                        <text x="248" y="305">KH</text>
-                        <text x="275" y="170">VN</text>
-                        <text x="170" y="378" fill="#1e293b">MY 🇲🇾</text>
-                        <text x="248" y="396" fill="#1e293b">SG</text>
-                        <text x="415" y="365" fill="#1e293b">BN</text>
-                        <text x="320" y="480">INDONESIA</text>
-                        <text x="445" y="190">PH</text>
-                        <text x="480" y="495" fill="#1e293b">TL</text>
-                    </g>
-                </svg>
+                <div id="MM" class="map-hotspot" style="top: 25%; left: 23%; width: 60px; height: 60px;" onclick="launchGame('MM')"></div>
+                <div id="LA" class="map-hotspot" style="top: 27%; left: 34%; width: 45px; height: 40px;" onclick="launchGame('LA')"></div>
+                <div id="TH" class="map-hotspot" style="top: 36%; left: 32%; width: 55px; height: 65px;" onclick="launchGame('TH')"></div>
+                <div id="KH" class="map-hotspot" style="top: 44%; left: 38%; width: 45px; height: 40px;" onclick="launchGame('KH')"></div>
+                <div id="VN" class="map-hotspot" style="top: 35%; left: 43%; width: 35px; height: 75px;" onclick="launchGame('VN')"></div>
+                <div id="MY" class="map-hotspot" style="top: 61%; left: 32%; width: 50px; height: 35px;" onclick="launchGame('MY')"></div>
+                <div id="SG" class="map-hotspot" style="top: 70%; left: 39%; width: 25px; height: 25px;" onclick="launchGame('SG')"></div>
+                <div id="BN" class="map-hotspot" style="top: 59%; left: 56%; width: 25px; height: 25px;" onclick="launchGame('BN')"></div>
+                <div id="ID" class="map-hotspot" style="top: 73%; left: 55%; width: 140px; height: 65px;" onclick="launchGame('ID')"></div>
+                <div id="PH" class="map-hotspot" style="top: 35%; left: 70%; width: 65px; height: 85px;" onclick="launchGame('PH')"></div>
+                <div id="TL" class="map-hotspot" style="top: 84%; left: 83%; width: 45px; height: 30px;" onclick="launchGame('TL')"></div>
+
             </div>
         </div>
 
@@ -327,7 +284,7 @@
             <div id="game-workspace" class="workspace">
                 <div id="start-view">
                     <p style="font-size: 45px; margin: 0;">✈️</p>
-                    <p style="color: #64748b; font-weight: 500;">Click on any colorful country on the map to unlock its currency challenges!</p>
+                    <p style="color: #64748b; font-weight: 500;">Click on any country on the map to unlock its currency mathematical puzzle!</p>
                 </div>
                 
                 <div id="quiz-stage" class="hidden"></div>
@@ -338,7 +295,7 @@
     </div>
 
     <script>
-        // Currency Database representing all 11 target modules for learning
+        // Core currency factual dataset
         const currencyData = {
             'MM': { name: "Myanmar", flag: "🇲🇲", symbol: "K", currencyName: "Myanmar Kyat (MMK)", notes: [{val:"1,000K", color:"#b45309"}, {val:"5,000K", color:"#6b7280"}], coins: ["50K", "100K"], features: "Kyat banknotes showcase stylized fine patterns alongside dancing traditional lions (Chinthe) to protect the country's wealth values." },
             'LA': { name: "Laos", flag: "🇱🇦", symbol: "₭", currencyName: "Lao Kip (LAK)", notes: [{val:"10,000₭", color:"#0284c7"}, {val:"20,000₭", color:"#b91c1c"}], coins: ["No Coins Currently Used"], features: "Lao Kip bills emphasize local construction monuments alongside the image of President Kaysone Phomvihane." },
@@ -356,31 +313,29 @@
         let activeTargetValue = 0;
         let selectedCode = "";
 
-        // --- TOOLTIP DIALOGUE BOX MOUSE ENGINE ---
+        // --- POP-UP DIALOGUE BUBBLE MOUSE LOGIC ---
         const tooltip = document.getElementById('tooltip');
         const mapFrame = document.getElementById('map-frame');
 
-        document.querySelectorAll('.country-path').forEach(path => {
-            path.addEventListener('mousemove', function(e) {
+        document.querySelectorAll('.map-hotspot').forEach(hotspot => {
+            hotspot.addEventListener('mouseenter', function() {
                 const id = this.getAttribute('id');
-                const data = currencyData[id] || { name: this.getAttribute('data-name'), flag: this.getAttribute('data-flag'), symbol: this.getAttribute('data-symbol') };
+                const data = currencyData[id];
                 
                 tooltip.style.display = 'block';
                 tooltip.innerHTML = `${data.flag} ${data.name} <br> <span style='color:#facc15;'>Currency: ${data.symbol}</span>`;
                 
-                const bounds = mapFrame.getBoundingClientRect();
-                tooltip.style.left = (e.clientX - bounds.left - tooltip.offsetWidth / 2) + 'px';
-                tooltip.style.top = (e.clientY - bounds.top - tooltip.offsetHeight - 12) + 'px';
+                // Read the exact hotspot placement markers to snap the bubble directly above it
+                tooltip.style.left = this.style.left;
+                tooltip.style.top = this.style.top;
             });
 
-            path.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+            hotspot.addEventListener('mouseleave', () => tooltip.style.display = 'none');
         });
 
-        // --- GAME SYSTEM LAUNCH CONTROLLER ---
+        // --- MATH GAME LAUNCH CONTROLLER ---
         function launchGame(code) {
             selectedCode = code;
-            document.querySelectorAll('.country-path').forEach(el => el.classList.remove('active'));
-            document.getElementById(code).classList.add('active');
             
             document.getElementById('start-view').classList.add('hidden');
             document.getElementById('currency-profile-page').classList.add('hidden');
@@ -393,15 +348,14 @@
             const statusBoard = document.getElementById('flight-status');
             statusBoard.innerHTML = `✈️ ARRIVED AT FLIGHT HUB: ${data.name.toUpperCase()} (${code})`;
 
-            // Generate an adaptive simple task tailored for a Year 3 level
-            const valMultiplier = Math.floor(Math.random() * 4) + 3; // 3 to 6
+            const valMultiplier = Math.floor(Math.random() * 4) + 3; // Random value 3 to 6
             activeTargetValue = valMultiplier * 5;
 
             quizStage.innerHTML = `
                 <h3 style="color:var(--primary-blue); margin:0;">${data.flag} Destination Terminal Challenge</h3>
-                <p>Welcome to ${data.name}! Let's try out a currency calculation before checking out the market stalls.</p>
+                <p>Welcome to ${data.name}! Let's pass the airport passport inspection with a quick calculation.</p>
                 <hr style="border: 0; border-top: 1px solid #e2e8f0; margin:12px 0;">
-                <p>If a box of fresh local juice costs exactly <strong>5 ${data.symbol} units</strong>, how much change total do you need to pay for <strong>${valMultiplier} boxes</strong> combined together?</p>
+                <p>If a small snack pack costs exactly <strong>5 ${data.symbol} units</strong>, how much do you need to pay for <strong>${valMultiplier} packs</strong> altogether?</p>
                 <div class="input-group">
                     <input type="number" id="math-input" placeholder="?"> <strong>${data.symbol}</strong>
                     <button class="btn" onclick="verifyAnswer()">Verify Ticket</button>
@@ -414,4 +368,65 @@
             const userInput = parseInt(document.getElementById('math-input').value);
             const feedback = document.getElementById('game-feedback');
 
-            if (userInput
+            if (userInput === activeTargetValue) {
+                feedback.className = "feedback success";
+                feedback.innerHTML = `🎉 Spot on calculation! Your terminal passport stamp has been unlocked.`;
+                feedback.innerHTML += `<br><br><button class="btn btn-blue" onclick="showCurrencyProfilePage()">Explore ${currencyData[selectedCode].name} Cash ➡️</button>`;
+            } else {
+                feedback.className = "feedback error";
+                feedback.innerHTML = "❌ That value doesn't quite check out. Remember your 5 times tables and re-try!";
+            }
+        }
+
+        // --- DETAILED CURRENCY REVEAL SCREEN ---
+        function showCurrencyProfilePage() {
+            document.getElementById('quiz-stage').classList.add('hidden');
+            const profilePage = document.getElementById('currency-profile-page');
+            profilePage.classList.remove('hidden');
+            
+            const data = currencyData[selectedCode];
+            
+            let notesHtml = '';
+            data.notes.forEach(note => {
+                notesHtml += `<div class="cash-item paper-note" style="background-color: ${note.color};" onclick="spinMoneyElement(this)">${note.val}</div>`;
+            });
+
+            let coinsHtml = '';
+            data.coins.forEach(coin => {
+                coinsHtml += `<div class="cash-item metal-coin" onclick="spinMoneyElement(this)">${coin}</div>`;
+            });
+
+            profilePage.innerHTML = `
+                <h3 style="color: var(--primary-blue); margin-top:0;">📂 Bank Vault Analysis: ${data.currencyName}</h3>
+                <p style="font-size:12px; color:#64748b; margin: -5px 0 15px 0;">✨ <em>Hover over money to magnify! Click an object to spin it!</em></p>
+                
+                <div style="text-align: left;">
+                    <strong style="font-size: 13px; color:#475569;">💵 Current Standard Notes:</strong>
+                    <div class="cash-flex-container">${notesHtml}</div>
+                    
+                    <strong style="font-size: 13px; color:#475569;">🪙 Metal Coins Circulated:</strong>
+                    <div class="cash-flex-container">${coinsHtml}</div>
+                </div>
+
+                <div style="margin-top:15px; text-align:left;">
+                    <strong>🎨 Unique Security / Print Elements:</strong>
+                    <p style="color: #475569; font-size:13px; line-height:1.5; background:#f8fafc; padding:10px; border-radius:6px; border-left:4px solid var(--primary-blue); margin-top:5px;">
+                        ${data.features}
+                    </p>
+                </div>
+
+                <button class="btn" style="background:#475569; margin-top:15px; width:100%;" onclick="resetWorkspace()">🔙 Return to Map Hub</button>
+            `;
+        }
+
+        function spinMoneyElement(element) {
+            element.classList.add('spin-animation');
+            setTimeout(() => { element.classList.remove('spin-animation'); }, 300);
+        }
+
+        function resetWorkspace() {
+            document.getElementById('currency-profile-page').classList.add('hidden');
+            document.getElementById('start-view').classList.remove('hidden');
+            document.getElementById('game-workspace').className = "panel workspace";
+            document.getElementById('flight-status').innerHTML = "📍 HUB TERMINAL: MALAYSIA // HOVER OVER COUNTRIES OR CLICK TO FLY TO A MISSION";
+        
